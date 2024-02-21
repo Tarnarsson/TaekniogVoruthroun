@@ -1,6 +1,9 @@
 # TaekniogVoruthroun
 
-**#Markmið **
+Þetta repo heldur utanum 
+
+
+# Markmið 
 
 
 
