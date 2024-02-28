@@ -1,3 +1,6 @@
+Þessum skjali verður síðar breytt í almennilegt README þegar verkefnið er lengra komið.
+
+
 # TaekniogVoruthroun
 
 Námskeiðið fjallar um að kynnast vöru og tækni -þróunarferlum ásamt því að stilla upp hermilíkani til þess að svara gefinni rannsóknarspurningu.
@@ -11,7 +14,13 @@ Uppbygging líkansins hjá Zhang og Thomson var gerð í forritinu Anylogic, en 
 
 # Markmið 
 
-Hugmyndin er að staðfesta útkomu Zhang og Thomson með því að kortleggja 
+Hugmyndin er að staðfesta útkomu Zhang og Thomson með því að setja hugmyndina upp í python með MESA, https://mesa.readthedocs.io/en/stable/
+
+# Verkefnalýsing:
+Yfirverkefninu er háttað þannig að búa á til vatnsaflsstöð sem á að búa til rafmagn fyrir samfélagið. Það að búa til rafmagnið er aðgerð en markmið
+Zhang og Thomson eru að horfa á þekkingarþörf. Sú þekkingar gerir okkur kleift að leysa allar þær undiraðgerðir sem verða saman að aðgerðinni að búa til rafmagn.
+
+Búið er að kortleggja allar þær aðgerðir sem þarf til þess að ![Screenshot 2024-02-28 at 08 35 22](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/122287863/c425eeb2-7bbf-4a9a-a4ce-52ea902089ef)
 
 
 # Frekari upplýsingar
