@@ -37,9 +37,7 @@ def knowledge_difference(unique_id1 :int, unique_id2 :int)-> int:
     KD = r**((1-(sum(v * u for v, u in zip(V_vector, U_vector))  /  (len(V_vector)*len(U_vector)))**2)**0.5)
     return KD 
 
-def work_efficiency(unique_id :int) -> int:
-    k_n = V[unique_id]
-    a_n = V[unique_id+2]
+def work_efficiency(k_n,a_n) -> int:
     for index, value in enumerate(k_n):
         if value < 1:
             k_n.pop(index)

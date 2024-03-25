@@ -1,5 +1,4 @@
-from mesamodel import technical_complexity
+from mesamodel import technical_complexity, Mesamodel
 
-knowledge = [1,2,3,4,5]
-
-print(technical_complexity(knowledge))
+model = Mesamodel(3)
+model.run_model()
