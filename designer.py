@@ -4,12 +4,14 @@
 import mesa
 
 class Designer(mesa.Agent):
-    def __init__(self, unique_id: int, model: mesa.Model): #knowledge_ability
+    def __init__(self, unique_id: int, model: mesa.Model, knowledge_ability: list[int]): 
         super().__init__(unique_id, model)
-
+        self.unique_id = unique_id
+        self.knowledge_ability = knowledge_ability
         # Initialize the value of knowledge 
-        """Might be better to have a list of knowledge"""
-        #self.knowledge_ability: list[int] = [] 
+
+
+        
 
     def step(self):
         print(f"I am designer agent number {str(self.unique_id)}")
