@@ -1,4 +1,5 @@
-from mesamodel import technical_complexity, Mesamodel
+import pandas as pd
 
-model = Mesamodel(3)
-model.run_model()
+df = pd.read_excel('Zhang_Thomson.xlsx')
+print(df)
+
