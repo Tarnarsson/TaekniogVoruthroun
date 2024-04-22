@@ -1,6 +1,8 @@
 import random
-from typing import List
+from typing import List, TYPE_CHECKING
 from math import e
+if TYPE_CHECKING:
+    from functions import Function
 
 def technical_complexity(unique_id: int, knowledge_vec: List[float]) -> float:
     # Calculates the technical complexity of function with a unique_id
@@ -9,12 +11,17 @@ def technical_complexity(unique_id: int, knowledge_vec: List[float]) -> float:
     #print(f"Created function {unique_id} with knowledge vector {knowledge[unique_id]} and technical complexity {TC}")
     return TC
 
-def shuffle_knowledge()->List[float]:
-    shuffled_knowledge = [.5,.5,1,1,1,1,1,1,1,2].copy()
+def shuffle_knowledge_k()->List[float]:
+    shuffled_knowledge = [.5,.5,.5,.5,1,1,1,1,1,2].copy()
     random.shuffle(shuffled_knowledge)
     return shuffled_knowledge
 
-def integration_complexity(V_vector: List[float], U_vector: List[float]) -> int:
+def shuffle_knowledge_a()->List[float]:
+    shuffled_knowledge = [.5,.5,1,1,1,1,2,2,2,2].copy()
+    random.shuffle(shuffled_knowledge)
+    return shuffled_knowledge
+
+def integration_complexity(V_vector: List[float], U_vector: List[float]) -> float:
     #Number of interfaces between function 1 and 2
     NF = 2  
     IC = 0.5 * NF * knowledge_difference(V_vector=V_vector, U_vector=U_vector) # EQ (3)
@@ -42,13 +49,56 @@ def work_efficiency(k_n, a_n) -> int:
     W = 1/8 * sum(min(1, a/k) for a, k in zip(a_n_filtered, k_n_filtered))
     #print(f"k_n : {k_n_filtered} and a_n : {a_n_filtered} with work efficiency of {W}")
     return W
-    
-def Q_Goodness(Q_G_input: float, PK: float, H: float)-> float: #EQ 12
+
+def calc_product_knowledge(function: "Function")-> float:
+    #returns .5 as is cause all pks are .5
+    IC_PK_tmp = 0.0
+    IC_tmp = 0.0
+    for f in function.dependant_functions:
+        IC_i = integration_complexity(V_vector=function.k_n, U_vector=f.k_n)
+        IC_PK_tmp += (IC_i*function.designer.product_knowledge[f.function_id])
+        IC_tmp += IC_i
+    if IC_tmp == 0: #TODO how to deal with non dependant functions
+        PK = function.designer.product_knowledge[function.function_id]
+    else: 
+        PK = IC_PK_tmp/IC_tmp
+    #print(f"PK is {PK}")
+    return PK
+
+def calc_goodness_of_input_info(function: "Function")-> float:
+    Q_G_i_tmp = 0.0
+    IC_tmp = 0.0
+    for subfunction in function.subfunctions:
+        IC_i = integration_complexity(V_vector=function.k_n, U_vector=subfunction.k_n)
+        Q_G_i_tmp += (IC_i*subfunction.Q_G)
+        IC_tmp += IC_i
+    if IC_tmp == 0: #TODO how to deal with non dependant functions
+        Q_G_input = 1
+    else: 
+        Q_G_input = Q_G_i_tmp/IC_tmp
+    #print(f"Q_ input is {Q_G_input}")
+    return Q_G_input   
+
+def calc_goodness(function: "Function")->float:
+    #TODO calculate
     alpha = 50
     beta = 10
-    Q_G = Q_G_input/(1+alpha*e**(-beta*PK*H))
-    return Q_G
+    up = calc_goodness_of_input_info(function=function)
+    down = (1+alpha*e**(-beta*calc_product_knowledge(function=function)*function.H))
+    return up/down
 
+def update_product_knowledge(PK_in: float, IC: float, E_cnslt: float):
+    delta = 3
+    s = 0.1
+    return 1/(1 + (1/PK_in - 1) * e**(-(delta*s*E_cnslt)/IC)) #EQ 15
+
+def update_general_knowledge(X_n: float, a_n_in: float,E_cnslt: float, TC: float)-> float:
+    gamma = 3
+    s = 0.1
+    return X_n/(1 + (X_n/a_n_in - 1)*e**-((gamma*s*E_cnslt)/TC) )
+
+def calc_actual_effort(E_t_plan: float ,l: float,r: int) -> float:
+    return E_t_plan * (1-l)**r
 
 
 if __name__ == "__main__":
