@@ -4,9 +4,7 @@ from math import e
 if TYPE_CHECKING:
     from functions import Function
 
-def technical_complexity(unique_id: int, knowledge_vec: List[float]) -> float:
-    # Calculates the technical complexity of function with a unique_id
-    #knowledge = knowledge_dict(unique_id=unique_id)
+def technical_complexity( knowledge_vec: List[float]) -> float:
     TC = (sum([value**2 for value in knowledge_vec])/len(knowledge_vec))**0.5 # EQ (1)
     #print(f"Created function {unique_id} with knowledge vector {knowledge[unique_id]} and technical complexity {TC}")
     return TC
@@ -27,15 +25,15 @@ def integration_complexity(V_vector: List[float], U_vector: List[float]) -> floa
     IC = 0.5 * NF * knowledge_difference(V_vector=V_vector, U_vector=U_vector) # EQ (3)
     return IC
 
-def knowledge_difference(V_vector: List[float], U_vector: List[float])-> int:
+def knowledge_difference(V_vector: List[float], U_vector: List[float])-> float:
     #This function should fetch two knowledge vectors and return a value on the knowledge difference
     r = 2 # upper limit of knowledge scale
     KD = r**((1-(sum(v * u for v, u in zip(V_vector, U_vector))  /  (len(V_vector)*len(U_vector)))**2)**0.5) #EQ (2)
     return KD 
 
-def work_efficiency(k_n, a_n) -> int:
+def work_efficiency(k_n, a_n) -> float:
     # Use list comprehension to filter out elements where k_n value is less than 1
-    filtered_pairs = [(k, a) for k, a in zip(k_n, a_n) if k >= 1]
+    filtered_pairs = [(k, a) for k, a in zip(k_n, a_n) if k > 0.5]
 
     # Unzip the pairs back into two lists
     k_n_filtered, a_n_filtered = zip(*filtered_pairs) if filtered_pairs else ([], [])
@@ -46,7 +44,7 @@ def work_efficiency(k_n, a_n) -> int:
 
     # Calculate work efficiency based on filtered lists
     # Assuming the rest of the work_efficiency calculation goes here
-    W = 1/8 * sum(min(1, a/k) for a, k in zip(a_n_filtered, k_n_filtered))
+    W = 1/len(k_n_filtered) * sum(min(1, a/k) for a, k in zip(a_n_filtered, k_n_filtered))
     #print(f"k_n : {k_n_filtered} and a_n : {a_n_filtered} with work efficiency of {W}")
     return W
 
@@ -80,14 +78,13 @@ def calc_goodness_of_input_info(function: "Function")-> float:
     return Q_G_input   
 
 def calc_goodness(function: "Function")->float:
-    #TODO calculate
-    alpha = 50
+    alpha = 100
     beta = 10
     up = calc_goodness_of_input_info(function=function)
     down = (1+alpha*e**(-beta*calc_product_knowledge(function=function)*function.H))
     return up/down
 
-def update_product_knowledge(PK_in: float, IC: float, E_cnslt: float):
+def update_product_knowledge(PK_in: float, IC: float, E_cnslt: float) -> float:
     delta = 3
     s = 0.1
     return 1/(1 + (1/PK_in - 1) * e**(-(delta*s*E_cnslt)/IC)) #EQ 15

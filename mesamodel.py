@@ -76,29 +76,33 @@ class Mesamodel(mesa.Model):
         if random.random() < .5: #TODO Breyta
             print(f"Consultation accepted")
             requester.consultation_partner = expert
-            requester.function.in_consultation = True
+            requester.in_general_consultation = True
 
     def product_consultation_request(self,requester: Designer, incompatible: Function):
         reciever = incompatible.designer
-        """print("### Consultation request ###")
+        print("### Consultation request ###")
         print(f"\tRequester: {requester.unique_id}")
         print(f"\tIncompatible function: {incompatible.function_id}")
-        print(f"\tReceiver: {reciever.unique_id}")"""
+        print(f"\tReceiver: {reciever.unique_id}")
         if random.random() < .5: #TODO Breyta
             requester.consultation_partner = reciever
             reciever.consultation_partner = requester
-            requester.function.in_consultation = True
-            reciever.function.in_consultation = True
+            requester.in_product_consultation = True
+            reciever.in_product_consultation = True
 
     def print_status(self):
         print("### Status ###")
+        print(
+                f"\tFunction | function_status | Designer | Q_G | Tasks"
+            )
         for i, f in enumerate(self.functions):
             designer_string = (
                 f"Designer: {f.designer.unique_id}" if f.designer else "Designer: "
             )
             task_string = (f"{f.on_task+1}/{f.num_tasks}" if f.on_task < f.num_tasks else "DONE")
+            function_status = (f"DONE" if f.function_status else f"")
             print(
-                f"\tFunction {i:<2}| {f.function_status:<2}| {designer_string:<13}| {f.Q_G:.2f} | {task_string}"
+                f"\tFunction {i:<2}| {function_status:<5}| {designer_string:<13}| {f.Q_G:.2f} | {task_string}"
             )
 
     def step(self):

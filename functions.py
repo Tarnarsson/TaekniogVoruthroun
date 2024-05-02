@@ -3,17 +3,16 @@
 ###############################
 import mesa
 from math import ceil
-from random import triangular, random
-from information import Info
+from random import triangular
 from designer import Designer
 from equations import work_efficiency, technical_complexity, calc_goodness, calc_actual_effort
 from typing import List
 
 #Learning factor
-l = .05
+l = .9
 
 class Task:
-    def __init__(self, task_id: int, E_t_plan: float, function):
+    def __init__(self, task_id: int, E_t_plan: float, function: "Function"):
         self.function = function
         self.task_id = task_id
         self.E_t_plan = E_t_plan
@@ -23,15 +22,25 @@ class Task:
         self.r = 0
         self.E_t_actual = calc_actual_effort(E_t_plan=self.E_t_plan, l=l, r=self.r)
 
-    def work_on(self, function_id: int):
+    def work_on(self):
+
         if self.work_todo - self.function.W > 0:
             self.work_todo -= self.function.W
             self.work_done += self.function.W
+            self.function.designer.effort_working_on_task += self.function.W
+            if self.r > 0:
+                self.function.designer.effort_rework += self.function.W
         else:
             self.work_done += self.work_todo
             self.work_todo = 0 
+            self.function.designer.effort_working_on_task += self.work_todo
+            if self.r > 0:
+                self.function.designer.effort_rework += self.work_todo
         if self.work_todo == 0:
             self.task_status = True
+            self.function.designer.tasks_completed += 1
+            if self.r > 0:
+                self.function.designer.tasks_reworked += 1
         return self.task_id
 
 
@@ -42,12 +51,12 @@ class Function(mesa.Agent):
         self.designer = designer #TODO
         self.function_id = function_id
         self.k_n = k_n
-        self.complexity = technical_complexity(unique_id = self.function_id, knowledge_vec = self.k_n)
+        self.complexity = technical_complexity(knowledge_vec = self.k_n)
  
         self.on_task = 0
         self.H = 0
  
-        self.E_f_plan = triangular(1,3,2)*self.complexity #EQ (4)
+        self.E_f_plan = triangular(20,50,35)*self.complexity #EQ (4)
         self.num_tasks = ceil(self.E_f_plan/4) #EQ (5) 
         self.E_t_plan = self.E_f_plan/self.num_tasks #EQ (6)
  
@@ -68,7 +77,6 @@ class Function(mesa.Agent):
 
         self.can_start = False
 
-        self.in_consultation = False
     
     def work_on(self) -> bool:
         if not self.W:
@@ -78,7 +86,7 @@ class Function(mesa.Agent):
 
         if self.on_task < self.num_tasks:
             task = self.tasks[self.on_task]
-            task.work_on(function_id = self.function_id)
+            task.work_on()
             if task.task_status: 
                 self.on_task += 1
                 self.H = self.on_task/self.num_tasks
@@ -90,6 +98,7 @@ class Function(mesa.Agent):
         
     def rework(self, rework_start: int):
         self.on_task = rework_start
+        self.designer.tasks_completed -= (self.num_tasks- rework_start)
         self.function_status = False
         self.H = self.on_task/self.num_tasks
         for task in self.tasks[rework_start:]:
@@ -99,8 +108,14 @@ class Function(mesa.Agent):
             task.task_status = False
 
     def update_quality(self):
+        old_Q_G = 0
+        new_Q_G = 0
         self.Q_T = self.W
         self.Q_I = self.designer.product_knowledge[self.function_id]
-        self.Q_G = calc_goodness(self)
+        old_Q_G = self.Q_G
+        new_Q_G = calc_goodness(self) #TODO if old and new Q_g are eq and pk is over 95%
+        if old_Q_G == new_Q_G and self.designer.product_knowledge[self.function_id] > .95:
+            self.Q_G = .95
+        else: self.Q_G = new_Q_G
 
 
