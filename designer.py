@@ -129,7 +129,6 @@ class Designer(mesa.Agent):
             self.consult_on_product_knowledge()
             return
 
-        #print(f"I am designer agent number {str(self.unique_id)}")
         if self.in_general_consultation:
             self.consult_on_general_knowledge()
             return
@@ -137,7 +136,6 @@ class Designer(mesa.Agent):
         if not self.function.can_start:
             self.check_information()
             if not self.function.can_start:
-                #print(f"WE ARE HERE {self.function.function_id+1}")
                 return
 
         if not self.function.function_status:
@@ -154,6 +152,6 @@ class Designer(mesa.Agent):
                             self.send_information()
                         else:
                             self.function.function_status = True
-                elif 0.75 < random.random(): #TODO communication breyta
+                elif 0.25 < random.random(): #TODO communication breyta
                     self.send_information()
 

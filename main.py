@@ -17,13 +17,19 @@ working_on_task_effort = []
 if __name__ == "__main__":
 
     starter_model = Mesamodel(57)
-    q_g = [[] for _ in starter_model.designers]
+    #q_g = [[] for _ in starter_model.designers]
+    q_g = []
     
     for i in range(3000):
+        #MODEL RUNNER
         starter_model.step()
         print(f"step {i} has been run")
+        
+        #TASKS
         completed_tasks.append(sum([designer.tasks_completed for designer in starter_model.designers]))
         reworked_tasks.append(sum([designer.tasks_reworked for designer in starter_model.designers]))
+
+        #EFFORTS
         consultion_effort.append(sum([designer.effort_consultation for designer in starter_model.designers]))
         read_effort.append(sum([designer.effort_read for designer in starter_model.designers]))
         prep_effort.append(sum([designer.effort_prepare for designer in starter_model.designers]))
@@ -32,9 +38,12 @@ if __name__ == "__main__":
         #for designer in starter_model.designers: [6, 25, 26, 27, 49, 50, 51]
         #    q_g[designer.unique_id].append(designer.function.Q_G)
         
-        for designer in starter_model.designers: 
+        """for designer in starter_model.designers: 
             if designer.unique_id in [6, 25, 26, 27, 49, 50, 51]:
-                q_g[designer.unique_id].append(designer.function.Q_G)
+                q_g[designer.unique_id].append(designer.function.Q_G)"""
+        
+        q_g.append(sum([designer.function.Q_G for designer in starter_model.designers]) / len(starter_model.designers))
+        
 
 
     # Ensure the img directory exists
@@ -65,9 +74,10 @@ if __name__ == "__main__":
     plt.close()
 
     plt.figure(figsize=(12, 6))
-    for idx, designer_q_g in enumerate(q_g):
+    """for idx, designer_q_g in enumerate(q_g):
         if idx in [6, 25, 26, 27, 49, 50, 51]:
-            plt.plot(designer_q_g, label=f'Designer {idx} Q_G Over Time')
+            plt.plot(designer_q_g, label=f'Designer {idx} Q_G Over Time')"""
+    plt.plot(q_g, label='AverageQ_G Over Time')
     plt.xlabel('Step')
     plt.ylabel('Q_G Value')
     plt.title('General Knowledge Quality (Q_G) Over Time for Each Designer')
