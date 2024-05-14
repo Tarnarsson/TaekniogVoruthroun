@@ -16,8 +16,7 @@ git clone https://github.com/yourusername/TaekniogVoruthroun.git
 ```
 2. Navigate to the project directory:
 
-``` ![Screenshot 2024-05-14 101513](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/80471217/d8a270a6-f522-4c53-9099-7129848db1af)
-
+``` 
 cd TaekniogVoruthroun
 ```
 3. Install the required packages:
@@ -25,6 +24,9 @@ cd TaekniogVoruthroun
 ```
 pip install -r requirements.txt
 ```
+
+![Screenshot 2024-05-14 101513](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/80471217/d8a270a6-f522-4c53-9099-7129848db1af)
+
 
 ## Usage
 To run the simulation model, execute the following command:
