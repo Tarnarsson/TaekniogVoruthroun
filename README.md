@@ -1,7 +1,7 @@
 # TaekniogVoruthroun
 
 ## Description
-This repository contains the implementation of a simulation model in Python, based on the research conducted by Zhang and Thomson. The project aims to replicate the findings and provide a tool for further exploration of the concepts discussed in the paper.
+This repository contains the implementation of a simulation model in Python, based on the research conducted by Zhang and Thomson. The project aims to replicate the findings and provide a tool for further exploration of the concepts discussed in the paper. This paper is about how learning can improve product development processes and how knowledge can help in product design.
 
 ## Motivation
 The motivation behind this project is to deepen the understanding of the simulation techniques discussed by Zhang and Thomson, and to provide a practical application of these methods in Python.
@@ -33,7 +33,6 @@ python3 main.py
 ```
 
 breyting
-Ziddiddu
 
 
 
