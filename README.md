@@ -9,8 +9,10 @@ The motivation behind this project is to deepen the understanding of the simulat
 ## Installation
 To set up this project locally, follow the steps below:
 
-1. Clone the repository:
+0. Installing python on your machine, if you do not already have python on your machine you will have to install it [here]{https://www.python.org/downloads/}
 
+1. Clone the repository:
+Enter the following commands in a Terminal window in a folder where you intend to keep the files.
 ```
 git clone https://github.com/yourusername/TaekniogVoruthroun.git
 ```
@@ -24,6 +26,12 @@ cd TaekniogVoruthroun
 ```
 pip install -r requirements.txt
 ```
+## Usage
+To run the simulation model, execute the following command:
+
+```
+python3 main.py
+```
 
 ## Findings of the simulations
 
@@ -32,12 +40,6 @@ This picture was taken from the result of the article Zang and Thomas. The pictu
 ![Screenshot 2024-05-14 101513](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/80471217/d8a270a6-f522-4c53-9099-7129848db1af)
 
 
-## Usage
-To run the simulation model, execute the following command:
-
-```
-python3 main.py
-```
 
 breyting
 
