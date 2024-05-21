@@ -45,10 +45,10 @@ class Task:
 
 
 class Function(mesa.Agent):
-    # The functions that the designer has to finish, it should be a cumulation of N tasks
+    # The functions that the designer has to finish, should be a cumulation of N tasks
     def __init__(self, function_id: int, model: mesa.Model, k_n: List[float], designer: Designer): 
         super().__init__(function_id, model) 
-        self.designer = designer #TODO
+        self.designer = designer
         self.function_id = function_id
         self.k_n = k_n
         self.complexity = technical_complexity(knowledge_vec = self.k_n)
@@ -56,7 +56,7 @@ class Function(mesa.Agent):
         self.on_task = 0
         self.H = 0
  
-        self.E_f_plan = triangular(20,50,35)*self.complexity #EQ (4)
+        self.E_f_plan = triangular(10,30,25)*self.complexity #EQ (4)
         self.num_tasks = ceil(self.E_f_plan/4) #EQ (5) 
         self.E_t_plan = self.E_f_plan/self.num_tasks #EQ (6)
  
@@ -67,9 +67,9 @@ class Function(mesa.Agent):
         self.Parent = None
  
         self.information_recieved = []
-        self.dependant_functions = [] #TODO make tree
+        self.dependant_functions = [] 
  
-        self.subfunctions = [] #TODO make tree
+        self.subfunctions = [] 
  
         self.Q_T = 0
         self.Q_I = 0
@@ -80,8 +80,6 @@ class Function(mesa.Agent):
     
     def work_on(self) -> bool:
         if not self.W:
-            #print(f"this is k_n {self.k_n} and it should not be equal to {self.designer.a_n}")
-
             self.W = work_efficiency(k_n = self.k_n, a_n = self.designer.a_n)
 
         if self.on_task < self.num_tasks:
@@ -91,14 +89,13 @@ class Function(mesa.Agent):
                 self.on_task += 1
                 self.H = self.on_task/self.num_tasks
                 self.update_quality()
-                #print(f"##################Task {self.on_task+1}/{self.num_tasks+1} in function {self.function_id+1} is finished####################")
         else:
             task = self.tasks[self.num_tasks-1] 
-        return task.task_status #buið eða ekki #TODO
+        return task.task_status 
         
-    def rework(self, rework_start: int):
+    def rework(self, rework_start: int) -> None:
         self.on_task = rework_start
-        self.designer.tasks_completed -= (self.num_tasks- rework_start)
+        self.designer.tasks_completed -= (self.num_tasks - rework_start)
         self.function_status = False
         self.H = self.on_task/self.num_tasks
         for task in self.tasks[rework_start:]:
@@ -107,15 +104,19 @@ class Function(mesa.Agent):
             task.work_done = 0
             task.task_status = False
 
-    def update_quality(self):
+    def update_quality(self) -> None:
         old_Q_G = 0
         new_Q_G = 0
         self.Q_T = self.W
         self.Q_I = self.designer.product_knowledge[self.function_id]
         old_Q_G = self.Q_G
         new_Q_G = calc_goodness(self) #TODO if old and new Q_g are eq and pk is over 95%
-        if old_Q_G == new_Q_G and self.designer.product_knowledge[self.function_id] > .95:
+        if old_Q_G == new_Q_G and self.designer.product_knowledge[self.function_id] > .95: #failsafe
             self.Q_G = .95
-        else: self.Q_G = new_Q_G
+        elif self.function_id == 0 and self.designer.function.Q_G < .9: 
+            self.Q_G = new_Q_G+0.02
+        else: 
+            self.Q_G = new_Q_G
+
 
 

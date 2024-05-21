@@ -6,7 +6,6 @@ if TYPE_CHECKING:
 
 def technical_complexity( knowledge_vec: List[float]) -> float:
     TC = (sum([value**2 for value in knowledge_vec])/len(knowledge_vec))**0.5 # EQ (1)
-    #print(f"Created function {unique_id} with knowledge vector {knowledge[unique_id]} and technical complexity {TC}")
     return TC
 
 def shuffle_knowledge_k()->List[float]:
@@ -20,8 +19,8 @@ def shuffle_knowledge_a()->List[float]:
     return shuffled_knowledge
 
 def integration_complexity(V_vector: List[float], U_vector: List[float]) -> float:
-    #Number of interfaces between function 1 and 2
-    NF = 2  
+    #Number of interfaces between function 1 and 2 , could be 1-3 according to Zhang
+    NF = 3 
     IC = 0.5 * NF * knowledge_difference(V_vector=V_vector, U_vector=U_vector) # EQ (3)
     return IC
 
@@ -45,11 +44,9 @@ def work_efficiency(k_n, a_n) -> float:
     # Calculate work efficiency based on filtered lists
     # Assuming the rest of the work_efficiency calculation goes here
     W = 1/len(k_n_filtered) * sum(min(1, a/k) for a, k in zip(a_n_filtered, k_n_filtered))
-    #print(f"k_n : {k_n_filtered} and a_n : {a_n_filtered} with work efficiency of {W}")
     return W
 
 def calc_product_knowledge(function: "Function")-> float:
-    #returns .5 as is cause all pks are .5
     IC_PK_tmp = 0.0
     IC_tmp = 0.0
     for f in function.dependant_functions:
@@ -60,7 +57,6 @@ def calc_product_knowledge(function: "Function")-> float:
         PK = function.designer.product_knowledge[function.function_id]
     else: 
         PK = IC_PK_tmp/IC_tmp
-    #print(f"PK is {PK}")
     return PK
 
 def calc_goodness_of_input_info(function: "Function")-> float:
@@ -74,7 +70,6 @@ def calc_goodness_of_input_info(function: "Function")-> float:
         Q_G_input = 1
     else: 
         Q_G_input = Q_G_i_tmp/IC_tmp
-    #print(f"Q_ input is {Q_G_input}")
     return Q_G_input   
 
 def calc_goodness(function: "Function")->float:
@@ -89,23 +84,13 @@ def update_product_knowledge(PK_in: float, IC: float, E_cnslt: float) -> float:
     s = 0.1
     return 1/(1 + (1/PK_in - 1) * e**(-(delta*s*E_cnslt)/IC)) #EQ 15
 
-def update_general_knowledge(X_n: float, a_n_in: float,E_cnslt: float, TC: float)-> float:
+def update_general_knowledge(X_n: float, a_n_in: float, E_cnslt: float, TC: float)-> float:
     gamma = 3
     s = 0.1
-    return X_n/(1 + (X_n/a_n_in - 1)*e**-((gamma*s*E_cnslt)/TC) )
+    return X_n/(1 + (X_n/a_n_in - 1)*e**-((gamma*s*E_cnslt)/TC))
 
 def calc_actual_effort(E_t_plan: float ,l: float,r: int) -> float:
     return E_t_plan * (1-l)**r
 
 
-if __name__ == "__main__":
-    print()
-
-"""    knowledge_dict(1)
-    knowledge_dict(2)
-    knowledge_dict(3)
-    knowledge_dict(4)
-    work_efficiency(1)
-    work_efficiency(2)
-    print(knowledge_difference(1,2))"""
 

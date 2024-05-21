@@ -19,6 +19,8 @@ class Mesamodel(mesa.Model):
         self.num_agents = N
         self.schedule = mesa.time.BaseScheduler(self) #aðrar aðferðir RandomActivation eða SimultaneousActivation
 
+        self.model_running = True
+
         self.designers_function = {}
 
         for i in range(N):
@@ -51,7 +53,7 @@ class Mesamodel(mesa.Model):
             else:
                 self.functions[index].can_start = True
 
-    def find_expert(self, requester: Designer)->Optional[Designer]:
+    def find_expert(self, requester: Designer) -> Optional[Designer]:
         best_designer = None
         best_diff = 0
         for designer in self.designers:
@@ -66,19 +68,20 @@ class Mesamodel(mesa.Model):
                 best_designer = designer
         return best_designer
                 
-    def general_consultation_request(self, requester: Designer):
+    def general_consultation_request(self, requester: Designer) -> None:
         expert = self.find_expert(requester=requester)
         print("### General consultation request ###")
         print(f"\tRequester: {requester.unique_id}")
-        print(f"\tReceiver: {expert.unique_id}")
-        if expert == None:
+        if not expert:
+            print(f"\tNo expert found for {requester.unique_id}")
             return
+        print(f"\tReceiver: {expert.unique_id}")
         if random.random() < .5: #TODO Breyta
             print(f"Consultation accepted")
             requester.consultation_partner = expert
             requester.in_general_consultation = True
 
-    def product_consultation_request(self,requester: Designer, incompatible: Function):
+    def product_consultation_request(self,requester: Designer, incompatible: Function) -> None:
         reciever = incompatible.designer
         print("### Consultation request ###")
         print(f"\tRequester: {requester.unique_id}")
@@ -90,7 +93,7 @@ class Mesamodel(mesa.Model):
             requester.in_product_consultation = True
             reciever.in_product_consultation = True
 
-    def print_status(self):
+    def print_status(self) -> None:
         print("### Status ###")
         print(
                 f"\tFunction | function_status | Designer | Q_G | Tasks"
@@ -102,11 +105,13 @@ class Mesamodel(mesa.Model):
             task_string = (f"{f.on_task+1}/{f.num_tasks}" if f.on_task < f.num_tasks else "DONE")
             function_status = (f"DONE" if f.function_status else f"")
             print(
-                f"\tFunction {i:<2}| {function_status:<5}| {designer_string:<13}| {f.Q_G:.2f} | {task_string}"
+                f"\tFunction {i:<2}| {function_status:<5}| {designer_string:<13} | {f.Q_G:.2f} | {task_string}"
             )
 
-    def step(self):
+    def step(self) -> None:
         self.schedule.step()
         self.print_status()
-        if all([function.function_status for function in self.functions]):
-            self.running = False
+        if all([function.function_status for function in self.functions if function.function_id != 0]) and self.functions[0].Q_G >= 0.95:
+            print("STOP MODEL################################################")
+            self.model_running = False
+

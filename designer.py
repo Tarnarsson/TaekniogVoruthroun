@@ -2,6 +2,7 @@
 #using python 3.10.0 64-bit
 ###############################
 import mesa
+import pandas as pd
 from typing import List, TYPE_CHECKING
 from information import Info
 import random
@@ -41,20 +42,17 @@ class Designer(mesa.Agent):
             dependant_function.information_recieved = [i for i in  dependant_function.information_recieved if i.function != self.function]
             dependant_function.information_recieved.append(information)
 
-    def read_information(self, information:Info):
+    def read_information(self, information:Info) -> str:
         information_type = "Parent" if information.function in self.function.subfunctions else "Interdependant"
-        self.effort_read += information.effort_read
+        self.effort_read += information.effort_read #FOR IMG
         if information_type == "Parent":
             print(f"Q_g is  {information.Q_G} ################### {information.function.function_id}")
             if information.Q_G < 0.95:
                 if information.H == 1.0:
                     self.model.product_consultation_request(requester=self, incompatible=information.function)
-
-                    #self.model.send_consultation request
-                    return "Consult" # TODO send consultation request
+                    return "Consult" 
                 return "Wait"
             else: 
-                print(f"changing function status in {self.function.function_id}")
                 information.function.function_status = True
                 self.check_start()
                 return "Good"
@@ -65,7 +63,7 @@ class Designer(mesa.Agent):
                 return "Consult" 
             return "Good"
         
-    def check_information(self):
+    def check_information(self) -> None:
         tmp_info = []
         for information in self.function.information_recieved:
             tmp_info.append(information)
@@ -76,29 +74,39 @@ class Designer(mesa.Agent):
                 break
         self.function.information_recieved = [value for value in self.function.information_recieved if value not in tmp_info]
 
-    def consult_on_product_knowledge(self):
+    def consult_on_product_knowledge(self) -> None:
         IC = integration_complexity(V_vector=self.function.k_n, U_vector=self.consultation_partner.function.k_n)
         E_cnslt = triangular(1,20,10)
         self.effort_consultation += E_cnslt
         for function in [self.function, self.consultation_partner.function]:
             self.product_knowledge[function.function_id] = update_product_knowledge(PK_in = self.product_knowledge[function.function_id],IC=IC,E_cnslt=E_cnslt)
-        rework_start = self.function.num_tasks  - ceil((1-self.function.Q_I)*self.function.num_tasks)
+            
+        if self.function.Parent is not None and not pd.isna(self.function.Parent) and not self.model.functions[int(self.function.Parent)].function_status:
+            if 0.5 < random.random(): #Likelyhood of rework
+                rework_start = self.function.num_tasks  - ceil((1-self.function.Q_I)*self.function.num_tasks)
+            else: rework_start = self.function.on_task
+        else:
+            rework_start = self.function.on_task
         self.in_product_consultation = False
-        if self.function.function_status or not self.function.can_start: #TRUE þýðir að function status sé búinn
+        if self.function.function_status or not self.function.can_start: #TRUE ðir að function status sé binn
             self.function.update_quality()
             return
         self.function.rework(rework_start=rework_start)
         self.function.update_quality()
 
                 
-    def consult_on_general_knowledge(self):
+    def consult_on_general_knowledge(self) -> None:
         E_cnslt =triangular(1,3,2)
         self.effort_consultation += E_cnslt
         for i in range(len(self.a_n)):
-            self.a_n[i] = update_general_knowledge(X_n = self.consultation_partner.a_n[i] ,a_n_in = self.a_n[i], E_cnslt=E_cnslt, TC=self.function.complexity)
+            test_an = self.a_n[i]
+            if test_an <= update_general_knowledge(X_n = self.consultation_partner.a_n[i] ,a_n_in = self.a_n[i], E_cnslt=E_cnslt, TC=self.function.complexity):
+                self.a_n[i] = update_general_knowledge(X_n = self.consultation_partner.a_n[i] ,a_n_in = self.a_n[i], E_cnslt=E_cnslt, TC=self.function.complexity)
+            else:
+                print(f"Failed to update AN for {i} in function {self.function.function_id}")
         self.in_general_consultation = False
         
-    def check_start(self):
+    def check_start(self) -> None:
         if all(subfunction.function_status for subfunction in self.function.subfunctions):
             self.function.can_start = True
 
@@ -106,20 +114,21 @@ class Designer(mesa.Agent):
         print(f"Performing TC")
         print(f"function id {self.function.function_id}, designer: {self.unique_id}")
         print(f"Q_t: {self.function.Q_T}")
-        rework_start = None
-        for i in range(self.function.num_tasks):
-            if self.function.Q_T < random.random():
-                print(f"Failed on task {i}")
-                rework_start = i
-                break
-        if rework_start == None:
-            print(f"Review passed")
-            return True
-        self.function.rework(rework_start)
+        if random.random() > .5:
+            rework_start = None
+            for i in range(min(self.function.num_tasks, self.function.on_task)):
+                if self.function.Q_T < random.random():
+                    print(f"Failed on task {i}")
+                    rework_start = i
+                    break
+            if rework_start == None:
+                print(f"Review passed")
+                return True
+            self.function.rework(rework_start)
         self.model.general_consultation_request(self)
         return False
         
-    def step(self):
+    def step(self) -> None:
         assert self.function
 
         if self.function.function_status:
@@ -143,6 +152,8 @@ class Designer(mesa.Agent):
             if current_task.work_done == 0:
                 self.check_information()
                 if self.in_product_consultation:
+                    return
+                if self.in_general_consultation:
                     return
             task_status = self.function.work_on()
             if task_status:

@@ -12,15 +12,17 @@ read_effort = []
 prep_effort = []
 rework_effort = []
 working_on_task_effort = []
+number_of_designers = []
+unresolved_complexity = []
 
 
 if __name__ == "__main__":
 
     starter_model = Mesamodel(57)
-    #q_g = [[] for _ in starter_model.designers]
     q_g = []
+    i = 1
     
-    for i in range(3000):
+    while starter_model.model_running and i < 3000:
         #MODEL RUNNER
         starter_model.step()
         print(f"step {i} has been run")
@@ -35,14 +37,13 @@ if __name__ == "__main__":
         prep_effort.append(sum([designer.effort_prepare for designer in starter_model.designers]))
         rework_effort.append(sum([designer.effort_rework for designer in starter_model.designers]))
         working_on_task_effort.append(sum([designer.effort_working_on_task for designer in starter_model.designers]))
-        #for designer in starter_model.designers: [6, 25, 26, 27, 49, 50, 51]
-        #    q_g[designer.unique_id].append(designer.function.Q_G)
-        
-        """for designer in starter_model.designers: 
-            if designer.unique_id in [6, 25, 26, 27, 49, 50, 51]:
-                q_g[designer.unique_id].append(designer.function.Q_G)"""
+
+        unresolved_complexity.append(sum([designer.function.complexity for designer in starter_model.designers]))
+        number_of_designers.append(len([designer for designer in starter_model.designers if designer.function.on_task > 0 and not designer.function.function_status and not designer.in_general_consultation and not designer.in_product_consultation]))
         
         q_g.append(sum([designer.function.Q_G for designer in starter_model.designers]) / len(starter_model.designers))
+
+        i += 1
         
 
 
@@ -51,7 +52,7 @@ if __name__ == "__main__":
         os.makedirs('img')
 
     plt.figure(figsize=(10, 5))
-    plt.plot(completed_tasks, label='Completed Tasks Over Time', c = 'black')
+    plt.plot(completed_tasks[::2], label='Completed Tasks Over Time', c = 'black')
     #plt.plot(reworked_tasks, label='Reworked Tasks', c = 'red')
     plt.xlabel('Step')
     plt.ylabel('Number of Completed Tasks')
@@ -86,4 +87,15 @@ if __name__ == "__main__":
     plt.close()
 
 
+    plt.figure(figsize=(6, 4))
+    plt.plot(number_of_designers, label='Number of active Designers in the Simulation', c = 'black')
+    plt.title('Total Number of Designers in the Simulation')
+    plt.ylabel('Count')
+    plt.savefig('img/number_of_designers.png')
+    plt.close()
 
+    plt.figure(figsize=(6, 4))
+    plt.plot(unresolved_complexity, label='Unresolved Complexity in the Simulation', c = 'black')
+    plt.title('Unresolved Complexity in the Simulation')
+    plt.ylabel('Count')
+    plt.savefig('img/unresolved_complexity.png')
