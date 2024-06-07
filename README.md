@@ -1,7 +1,7 @@
 # TaekniogVoruthroun
 
 ## Description
-This repository contains the implementation of a simulation model in Python, based on the research conducted by [Zhang et al.][Zhang]. Their project was built using the simulation software Anylogic, further information on Anylogic can be found [here](https://www.anylogic.com) . The project aims to replicate the findings and provide a tool for further exploration of the concepts discussed in the paper. This paper is about how learning can improve product development processes and how knowledge can help in product design.
+This repository contains the implementation of a simulation model in Python, based on the research conducted by [Zhang et al.][Zhang]. Their project was built using the simulation software Anylogic, further information on Anylogic can be found [here](https://www.anylogic.com) . The project aims to replicate the findings and provide a tool for further exploration of the concepts of knowledge within development processes. This paper is about how learning can improve product development processes and how knowledge can help in product design.
 
 ## Motivation
 The motivation behind this project is to deepen the understanding of the simulation techniques discussed by [Zhang et al.][Zhang], and to provide a practical application of these methods in Python. The model in this simulation is agent-based so this will give the students deeper understanding about agent-based simulations. This paper was found by the teacher of this course and encouraged the students to face this challenge.
@@ -35,13 +35,13 @@ python3 main.py
 
 ## Findings of the simulations
 
-This picture was taken from the result of the article [Zhang et al.][Zhang]. The pictures show the changes of the baseline scenario with time. Graph a show rate of finished task and the graph show that the finished task rate follows exponential distribution. Graph b shows the changes of the complexity. Graph c shows the number of active designers.
+This picture was taken from the result of the article [Zhang et al.][Zhang]. The pictures show the changes of the baseline scenario with time. Figure A show rate of finished task and the figure show that the finished task rate follows exponential distribution. Figure B shows the changes of the complexity. Figure C shows the number of active designers.
 
 ![Screenshot 2024-05-14 101513](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/80471217/d8a270a6-f522-4c53-9099-7129848db1af)
 
 ## Findings of our simulation
 
-The following figures are the results of the simuation model built with Python's Mesa package. They are a fairly good representation of the original but there is still work left, mainly work that was not specified in the article by [Zhang et al.][Zhang].  
+The following figures are the results of the simuation model built with Python's Mesa package. They are a fairly good representation of the original but there is still work left, mainly finetuning of parameters that was not specified in the article by [Zhang et al.][Zhang]. This can be observed in the B figures of both simulations where the shape of the line is obviously not the same. 
 
 <p float="left">
   <img src="img/completed_tasks_plot.png" width="30%" />
@@ -49,6 +49,10 @@ The following figures are the results of the simuation model built with Python's
   <img src="img/number_of_designers.png" width="30%" />
 </p>
 
+## Discussions 
+The article by [Zhang et al.][Zhang] is well written and has good representations of the model that they built and the tests that they performed but it could use a better explanation of its elements.
+
+góð æfing...
 
 ## Acknowledgments
 - Zhang and Thomson for their foundational paper [Zhang et al.][Zhang]
