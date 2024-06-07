@@ -1,9 +1,12 @@
 import warnings
+import random
+
 import os
 warnings.filterwarnings("ignore", category=FutureWarning)
 from mesamodel import Mesamodel
 import matplotlib.pyplot as plt
 
+random.seed(2)
 
 completed_tasks = []
 reworked_tasks = []
@@ -37,8 +40,11 @@ if __name__ == "__main__":
         prep_effort.append(sum([designer.effort_prepare for designer in starter_model.designers]))
         rework_effort.append(sum([designer.effort_rework for designer in starter_model.designers]))
         working_on_task_effort.append(sum([designer.effort_working_on_task for designer in starter_model.designers]))
+        
+        unresolved_complexity.append(sum([designer.function.unresolved_complexity()[0]+designer.function.unresolved_complexity()[1] for designer in starter_model.designers]))
 
-        unresolved_complexity.append(sum([designer.function.complexity for designer in starter_model.designers]))
+
+
         number_of_designers.append(len([designer for designer in starter_model.designers if designer.function.on_task > 0 and not designer.function.function_status and not designer.in_general_consultation and not designer.in_product_consultation]))
         
         q_g.append(sum([designer.function.Q_G for designer in starter_model.designers]) / len(starter_model.designers))
@@ -52,7 +58,7 @@ if __name__ == "__main__":
         os.makedirs('img')
 
     plt.figure(figsize=(10, 5))
-    plt.plot(completed_tasks[::2], label='Completed Tasks Over Time', c = 'black')
+    plt.plot(completed_tasks, label='Completed Tasks Over Time', c = 'black')
     #plt.plot(reworked_tasks, label='Reworked Tasks', c = 'red')
     plt.xlabel('Step')
     plt.ylabel('Number of Completed Tasks')

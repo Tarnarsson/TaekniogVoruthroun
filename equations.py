@@ -9,25 +9,26 @@ def technical_complexity( knowledge_vec: List[float]) -> float:
     return TC
 
 def shuffle_knowledge_k()->List[float]:
-    shuffled_knowledge = [.5,.5,.5,.5,1,1,1,1,1,2].copy()
+    shuffled_knowledge = [.5,.5,.5,1,1,1,1,1,1,2].copy()
     random.shuffle(shuffled_knowledge)
     return shuffled_knowledge
 
 def shuffle_knowledge_a()->List[float]:
-    shuffled_knowledge = [.5,.5,1,1,1,1,2,2,2,2].copy()
+    shuffled_knowledge = [.5,.5,1,1,1,1,1,2,2,2].copy()
     random.shuffle(shuffled_knowledge)
     return shuffled_knowledge
 
 def integration_complexity(V_vector: List[float], U_vector: List[float]) -> float:
     #Number of interfaces between function 1 and 2 , could be 1-3 according to Zhang
-    NF = 3 
+    NF = 2 
     IC = 0.5 * NF * knowledge_difference(V_vector=V_vector, U_vector=U_vector) # EQ (3)
     return IC
 
 def knowledge_difference(V_vector: List[float], U_vector: List[float])-> float:
+
     #This function should fetch two knowledge vectors and return a value on the knowledge difference
     r = 2 # upper limit of knowledge scale
-    KD = r**((1-(sum(v * u for v, u in zip(V_vector, U_vector))  /  (len(V_vector)*len(U_vector)))**2)**0.5) #EQ (2)
+    KD = r**((1-(sum(v * u for v, u in zip(V_vector, U_vector)) /  (len(V_vector)*len(U_vector)))**2)**0.5) #EQ (2)
     return KD 
 
 def work_efficiency(k_n, a_n) -> float:
@@ -93,4 +94,5 @@ def calc_actual_effort(E_t_plan: float ,l: float,r: int) -> float:
     return E_t_plan * (1-l)**r
 
 
-
+if __name__ == "__main__":
+    print(technical_complexity(knowledge_vec=[.5,.5,.5,1,1,1,1,1,2,2]))

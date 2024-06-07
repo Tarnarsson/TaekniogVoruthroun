@@ -5,7 +5,7 @@ import mesa
 from math import ceil
 from random import triangular
 from designer import Designer
-from equations import work_efficiency, technical_complexity, calc_goodness, calc_actual_effort
+from equations import work_efficiency, technical_complexity, calc_goodness, calc_actual_effort, integration_complexity
 from typing import List
 
 #Learning factor
@@ -103,6 +103,17 @@ class Function(mesa.Agent):
             task.work_todo = calc_actual_effort(E_t_plan=task.E_t_plan, l=l, r=task.r)
             task.work_done = 0
             task.task_status = False
+
+    def unresolved_complexity(self) -> float:
+     if self.function_status == True:
+         return (0.0, 0.0)
+     TC = self.complexity - self.H * self.complexity
+     IC = sum(
+         integration_complexity(self.k_n, dependant_function.k_n)
+         for dependant_function in self.dependant_functions
+         if dependant_function.function_status != True
+     )
+     return [TC,IC]
 
     def update_quality(self) -> None:
         old_Q_G = 0
