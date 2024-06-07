@@ -49,8 +49,6 @@ The following figures are the results of the simuation model built with Python's
   <img src="img/number_of_designers.png" width="30%" />
 </p>
 
-
-
 ## Discussions 
 The article by [Zhang et al.][Zhang] is well written and has good representations of the model that they built and the tests that they performed but it could use a better explanation of its elements. Although the Mesa built model is not perfect it comes quite close in replicating the results of the original article, as can be seen if figures A and C are compared in both models.
 
