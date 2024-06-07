@@ -57,7 +57,7 @@ if __name__ == "__main__":
     if not os.path.exists('img'):
         os.makedirs('img')
 
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(6, 4))
     plt.plot(completed_tasks, label='Completed Tasks Over Time', c = 'black')
     #plt.plot(reworked_tasks, label='Reworked Tasks', c = 'red')
     plt.xlabel('Step')
