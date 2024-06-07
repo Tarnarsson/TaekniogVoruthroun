@@ -41,9 +41,13 @@ This picture was taken from the result of the article Zang and Thomas. The pictu
 
 ## Findings of our simulation
 
+The following images are the results of the simuation model built with Python's Mesa package.
 
-
-
+<p float="left">
+  <img src="img/completed_tasks_plot.png" width="30%" />
+  <img src="img/unresolved_complexity.png" width="30%" /> 
+  <img src="img/number_of_designers.png" width="30%" />
+</p>
 
 
 ## Acknowledgments
