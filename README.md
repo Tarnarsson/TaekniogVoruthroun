@@ -39,9 +39,9 @@ This picture was taken from the result of the article Zang and Thomas. The pictu
 
 ![Screenshot 2024-05-14 101513](https://github.com/Tarnarsson/TaekniogVoruthroun/assets/80471217/d8a270a6-f522-4c53-9099-7129848db1af)
 
+## Findings of our simulation
 
 
-breyting
 
 
 
